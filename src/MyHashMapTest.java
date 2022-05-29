@@ -16,6 +16,14 @@ public class MyHashMapTest {
 		filereader = new FileReader("src/input.txt");
 	}
 
+	@Test
+	public void createHeapAndCheckMax() {
+		filereader.createHeap();
+
+		System.out.println(filereader.getMaxOfSection('A'));
+		// assertEquals((int)filereader.getMaxOfSection('A').marks, 11);
+	}
+
 
 
 	//Write testcase for checking max score of 2 sections

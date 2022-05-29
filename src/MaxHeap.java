@@ -1,9 +1,9 @@
 
 import java.util.*;
 
-public class MaxHeap<K, V> {
+public class MaxHeap<V, K> {
 
-List<HeapEntry<K,V>> entries;
+List<HeapEntry<V, K>> entries;
 int capacity;
 int heapSize = 0;
 Comparator comparator;
@@ -11,7 +11,7 @@ Comparator comparator;
     public MaxHeap(int capacity, Comparator comparator){
         // Constructor for the max heap
        
-		this.entries = new ArrayList<HeapEntry<K,V>>();
+		this.entries = new ArrayList<HeapEntry<V, K>>();
 		this.capacity = capacity;
 		this.comparator = comparator;
 
@@ -50,17 +50,17 @@ Comparator comparator;
 
 		// keys to compare
 		try {
-			K currentKey = entries.get(index).getKey();
-			K leftKey = entries.get(getLeftChildIndex(index)).getKey();
-			K rightKey = entries.get(getRightChildIndex(index)).getKey();
+			V currentKey = entries.get(index).getKey();  //(and replace heapentry with K) (or k with HeapEntry<V, K>)
+			V leftKey = entries.get(getLeftChildIndex(index)).getKey();
+			V rightKey = entries.get(getRightChildIndex(index)).getKey();
 		} catch(Exception IndexOutOfBoundsException) {
 			return;
 		}
 
 		// pain, fix later
-		K currentKey = entries.get(index).getKey();
-		K leftKey = entries.get(getLeftChildIndex(index)).getKey();
-		K rightKey = entries.get(getRightChildIndex(index)).getKey();
+		V currentKey = entries.get(index).getKey();  //(and replace heapentry with K) (or k with HeapEntry<V, K>)
+		V leftKey = entries.get(getLeftChildIndex(index)).getKey();
+		V rightKey = entries.get(getRightChildIndex(index)).getKey();
 		
 		// how compare works:
 		// compare(Object obj1, Object obj2)
@@ -104,7 +104,8 @@ Comparator comparator;
 	// should take the lowest input! such as the size of entries.
 	private void bubbleUp(int index) {
 
-		// check if the index is 0 so i can end early (cant go up more than 0)
+
+		// checV if the index is 0 so i can end early (cant go up more than 0)
 		if(index == 0) {
 			return;
 		}
@@ -112,32 +113,38 @@ Comparator comparator;
 		// not sure if this is entirely necessary
 		int currentIndex = index;
 
-		// keys to compare
-		K currentKey = entries.get(currentIndex).getKey();
-		K parentKey = entries.get(getParentIndex(currentIndex)).getKey();
+		// keys to compare (and replace heapentry with K) HeapEntry<V, K> 
+		V currentKey = entries.get(currentIndex).getKey();
+		V parentKey = entries.get(getParentIndex(currentIndex)).getKey();
 
 
 		// current key compared to parent key key (is current greater than parent)
 		int currentParentCompared = comparator.compare(currentKey, parentKey);
 		boolean currentGreaterThanParent = currentParentCompared > 0;
+		//System.out.println(getParentIndex(currentIndex));
+
+		if(!currentGreaterThanParent) {
+			return;
+		}
 
 		// swap (FIX THIS INTO WHILE LOOP IF NEEDED)
-		if(currentGreaterThanParent) {
+		else {
 			//int tempParentIndex = getParentIndex(currentIndex);
 			swap(currentIndex, getParentIndex(currentIndex));
 
 			// currentIndex = tempParentIndex;
+			if(getParentIndex(currentIndex) == 0) {
+				return;
+			}
 
 			bubbleUp(getParentIndex(currentIndex));
 		}
 
-		return;
-
 	}
 
-	public void add(K key, V value){
+	public void add(V key, K value){
 	    // Method to add the key value pair in the heap, remember to satisfy max heap Property
-		HeapEntry<K,V> newEntry = new HeapEntry(key, value);
+		HeapEntry<V, K> newEntry = new HeapEntry(key, value);
 
 		if(heapSize < capacity) {
 			entries.add(newEntry);
@@ -149,24 +156,24 @@ Comparator comparator;
 		// FIX THIS IF NEEDED
 		bubbleUp(heapSize);
 
+		//System.out.println("Ayowut");
 		heapSize++;
 	}
 
-	public HeapEntry<K,V> peek() {
+	public HeapEntry<V, K> peek() {
 
 		// just in case, i'm going to bubble down...
 		if (entries.get(0) != null) {
 			bubbleDown(0); 
 		}
-
 		return entries.get(0);
 
 	}
 	
-	public HeapEntry<K,V> remove() {
+	public HeapEntry<V, K> remove() {
 		//Method to remove the max element in the heap, remember to satisfy max heap Property
-		HeapEntry<K,V> maxEntry = peek();
-		HeapEntry<K,V> minEntry = entries.get(entries.size() -1);
+		HeapEntry<V, K> maxEntry = peek();
+		HeapEntry<V, K> minEntry = entries.get(entries.size() -1);
 
 		//ending early if it's already empty
 		if (heapSize == 0) {
@@ -180,7 +187,9 @@ Comparator comparator;
 
 		// i will be re-adding the smallest so I can bubbleDown effectively, 
 		// but i must remove it first
-		entries.remove(entries.size() -1);
+		if (entries.size() -1 != -1) {
+			entries.remove(entries.size() -1);
+		}
 
 		entries.add(0,minEntry);
 
@@ -213,24 +222,24 @@ Comparator comparator;
 	
 }
 
-class HeapEntry<K, V> implements DefaultMap.Entry<K,V>{
-	K key;
-	V value;
+class HeapEntry<V, K> implements DefaultMap.Entry<V,K>{
+	V key;
+	K value;
 
-	HeapEntry(K key, V value){
+	HeapEntry(V key, K value){
 		this.key = key;
 		this.value = value;
 	}
 
-	public K getKey() {
+	public V getKey() {
 		return key;
 	}
 	
-	public V getValue() {
+	public K getValue() {
 		return value;
 	}
 
-	public void setValue(V value){
+	public void setValue(K value){
 		this.value = value;
 	}
 
@@ -242,18 +251,30 @@ class HeapEntry<K, V> implements DefaultMap.Entry<K,V>{
 // 	// when capacity is more
 // 	// when given null values
 // 	// when all vals equal
+// 	// when trying to remove from empty entires
 
 // 	// also use PA8 tester to further test maxheap
 
 
 // 	System.out.println("The Max Heap is ");
 
-// 	Comparator<Integer> comparator = new Comparator<Integer>() {
-// 	@Override
-// 	public int compare(Integer o1, Integer o2) {
-// 		return Integer.compare(o1, o2);
-// 		}
-// 	};
+// 		// defining a comparator
+// 		Comparator<Integer> comparator = new Comparator<Integer>() {
+// 			@Override
+// 			public int compare(Integer student1, Integer student2) {
+// 				if (student1 > student2) {
+// 					return 1;
+// 				}
+	
+// 				else if (student1 < student2) {
+// 					return -1;
+// 				}
+	
+// 				return 0;
+// 				}
+// 			};
+	
+// 	comparator = comparator;
 
 // 	MaxHeap maxHeap = new MaxHeap(10, comparator);
 

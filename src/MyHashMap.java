@@ -19,7 +19,7 @@ public class MyHashMap<K, V> implements DefaultMap<K, V> {
 
     // Use this instance variable for Separate Chaining conflict resolution
     //private List<HashMapEntry<K, V>>[] buckets;  
-    private List<MaxHeap<K, V>> buckets;
+    private List<MaxHeap<K, V>> buckets = new ArrayList<MaxHeap<K, V>>(DEFAULT_INITIAL_CAPACITY);
 
     // Use this instance variable for Linear Probing
     //	private HashMapEntry<K, V>[] entries; 
@@ -30,37 +30,135 @@ public class MyHashMap<K, V> implements DefaultMap<K, V> {
     @SuppressWarnings("unchecked")
         public MyHashMap(int initialCapacity, Comparator myComparator)
             throws IllegalArgumentException {
-
             //constrcutor for the hashMap
+
+            this.myComparator = myComparator;
+
+            this.capacity = initialCapacity;
+
+            sections = new Character[initialCapacity];
+
+            size = 0;
+
+            buckets = new ArrayList<MaxHeap<K, V>>(initialCapacity);
+
+            for (int i = 0; i<initialCapacity; i++) {
+                buckets.add(null);
+            }
+
         }
 
     @Override
         public boolean put(K key, V value) throws IllegalArgumentException {
-
            //Method to add the key value pair to the hashMap
+            if (key == null) {
+                throw new IllegalArgumentException("Key cannot be null.");
+                }
+
+            // this decides what section it is (key = section, value = student obj)
+            int keyHash = Math.abs(Objects.hashCode(key)); 
+            int index = keyHash % capacity;
+
+
+            // System.out.println(buckets.get(index));
+            // if the section here is empty, make a new maxheap and add the value
+            // try {
+                // buckets.get(index);
+                if(buckets.get(index) == null) {
+                    //System.out.println("AYOOOO");
+                    //System.out.println("WE'RE HERE!");
+                    MaxHeap newTree = new MaxHeap(50, myComparator);
+                    newTree.add(value,key);
+                    buckets.add(index, newTree);
+                    size++;
+                    return true;
+                } 
+
+            // } catch (Exception IndexOutOfBoundsException) {
+            //     if(buckets.get(index) == null) {
+            //         System.out.println("AYOOOO");
+            //         //System.out.println("WE'RE HERE!");
+            //         MaxHeap newTree = new MaxHeap(50, myComparator);
+            //         newTree.add(value,key);
+            //         buckets.add(index, newTree);
+            //         size++;
+            //         return true;
+            //     } 
+            // }
+
+            // if its not empty, check if the student already exists here and if so, dont add them
+            // if they dont exist here, add them
+            // else {
+            MaxHeap aTree = buckets.get(index);
+            MaxHeap aTreeCopy = new MaxHeap<V, K>(50, myComparator);
+
+            HeapEntry<V,K> highestScorer;
+
+            while((highestScorer = aTree.remove()) != null) {
+                //HeapEntry<V,K> highestScorer = aTree.remove();
+
+                aTreeCopy.add(highestScorer.key, highestScorer.value);
+                System.out.println("yomom");
+
+                if(highestScorer.key.equals(value)) {
+                    return false;
+                }
+                
+
+            }
+            // student doesnt exist, can add
+            aTreeCopy.add(value, key);
+            buckets.set(index, aTreeCopy);
+            size++;
+            return true;
+
+            // }
         }
-
-
 
     @Override
         public V get(K key) throws IllegalArgumentException {
+            if (key == null) {
+                throw new IllegalArgumentException("Key cannot be null.");
+            }
 
-            //Method to get the value of given key
+            int keyHash = Math.abs(Objects.hashCode(key)); 
+            int index = keyHash % capacity;
+
+            // stop giving me error :(
+            
+            // try {
+            //     buckets.get(index); 
+            // }
+            // catch (Exception IndexOutOfBoundsException) {
+            //     return null;
+            // }
+
+            HeapEntry<V,K> newHeapEntry = (HeapEntry<V, K>) buckets.get(index).peek();
+            return newHeapEntry.getKey();
         }
 
     @Override
         public boolean containsKey(K key) throws IllegalArgumentException {
-            //Method to check if key is present
+            if (key == null) {
+                throw new IllegalArgumentException("Key cannot be null.");
+            }
+
+            int keyHash = Math.abs(Objects.hashCode(key)); 
+            int index = keyHash % capacity;
+
+            return buckets.get(index) != null;
         }
 
     @Override
         public int size() {
             //Method to get size of the hashMap
+            return size;
         }
 
     @Override
         public boolean isEmpty() {
             //Method to check if hashMap is empty
+            return buckets.isEmpty();
         }
 
     protected static class HashMapEntry<K, V> implements DefaultMap.Entry<K, V> {
