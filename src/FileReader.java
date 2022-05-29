@@ -43,11 +43,12 @@ public class FileReader {
 			String currentLine = null;
 
 			// if this doesn't work, add absolute path. also change br to fileinputstream
+			// "F:\\Documents\\GitHub\\Exam3-starter\\src\\input.txt"
 			InputStream f = new FileInputStream(this.filename);
 			Scanner sc = new Scanner(f);
 
-			while ((currentLine = br.readLine()) != null) {
-				System.out.println(hashMap.size());
+			while (sc.hasNextLine()) {
+				currentLine = sc.nextLine();
 
 				// student's specs
 				String[] studentSpecs = currentLine.split(",");
@@ -63,7 +64,7 @@ public class FileReader {
 
 			// System.out.println(hashMap.size());
 
-			br.close(); 
+			sc.close(); 
 
 		}
 		

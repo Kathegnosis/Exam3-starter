@@ -13,7 +13,7 @@ public class MyHashMapTest {
 
 	@Before
 	public void setUp() {
-		filereader = new FileReader("src/input.txt");
+		filereader = new FileReader("src\\input.txt");
 	}
 
 	@Test
