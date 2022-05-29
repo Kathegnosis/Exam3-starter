@@ -77,6 +77,14 @@ public class FileReader {
 	
 	public Student getMaxOfSection(char section) {
 		//Method that returns a maximum scoring student's record given the section
+		try {
+			hashMap.get(section);
+		} 
+		
+		catch (Exception e) {
+			return null;
+		}
+		
 		return this.hashMap.get(section);
 
 	}

@@ -94,7 +94,7 @@ public class MyHashMap<K, V> implements DefaultMap<K, V> {
 
             HeapEntry<V,K> highestScorer = aTree.peek();
 
-            while(aTree.heapSize != 0) {
+            while(aTree.heapSize != 0) { 
                 highestScorer = aTree.remove();
                 aTreeCopy.add(highestScorer.key, highestScorer.value);
 
