@@ -1,5 +1,3 @@
-// remove the "import *" after u fix br to fileinputstream
-import java.io.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -45,11 +43,8 @@ public class FileReader {
 			String currentLine = null;
 
 			// if this doesn't work, add absolute path. also change br to fileinputstream
-			File z = new File(filename);
-            String strDir = z.getAbsolutePath();
-			// FIX THIS
-			String strdir2 = "F:\\Documents\\GitHub\\Exam3-starter\\src\\input.txt";
-			BufferedReader br = new BufferedReader(new java.io.FileReader(strdir2)); 
+			InputStream f = new FileInputStream(this.filename);
+			Scanner sc = new Scanner(f);
 
 			while ((currentLine = br.readLine()) != null) {
 				System.out.println(hashMap.size());

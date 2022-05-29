@@ -92,13 +92,11 @@ public class MyHashMap<K, V> implements DefaultMap<K, V> {
             MaxHeap aTree = buckets.get(index);
             MaxHeap aTreeCopy = new MaxHeap<V, K>(50, myComparator);
 
-            HeapEntry<V,K> highestScorer;
+            HeapEntry<V,K> highestScorer = aTree.peek();
 
-            while((highestScorer = aTree.remove()) != null) {
-                //HeapEntry<V,K> highestScorer = aTree.remove();
-                System.out.println("yomom");
+            while(aTree.heapSize != 0) {
+                highestScorer = aTree.remove();
                 aTreeCopy.add(highestScorer.key, highestScorer.value);
-                
 
                 if(highestScorer.key.equals(value)) {
                     return false;

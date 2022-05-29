@@ -20,8 +20,8 @@ public class MyHashMapTest {
 	public void createHeapAndCheckMax() {
 		filereader.createHeap();
 
-		System.out.println(filereader.getMaxOfSection('A'));
-		// assertEquals((int)filereader.getMaxOfSection('A').marks, 11);
+		//System.out.println(filereader.getMaxOfSection('A'));
+		assertEquals((int)filereader.getMaxOfSection('A').marks, 94);
 	}
 
 
